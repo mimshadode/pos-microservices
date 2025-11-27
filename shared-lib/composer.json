@@ -1,0 +1,13 @@
+{
+    "name": "pos/shared-lib",
+    "description": "Shared library for POS microservices",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Pos\\Shared\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^8.2"
+    }
+}

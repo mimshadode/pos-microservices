@@ -1,0 +1,55 @@
+{
+    "info": {
+        "name": "POS Microservices",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Auth Service",
+            "item": [
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"admin@pos.test\",\n    \"password\": \"password\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:8001/api/auth/login",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8001",
+                            "path": ["api", "auth", "login"]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Product Service",
+            "item": [
+                {
+                    "name": "Get Products",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:8002/api/products",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "8002",
+                            "path": ["api", "products"]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

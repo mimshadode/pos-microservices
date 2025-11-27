@@ -1,0 +1,21 @@
+# Laravel
+*/vendor/
+*/node_modules/
+*/.env
+*/storage/*.key
+*/storage/framework/
+*/storage/logs/
+*/bootstrap/cache/
+
+# Docker
+docker-compose.override.yml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

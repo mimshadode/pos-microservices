@@ -1,0 +1,189 @@
+version: '3.8'
+
+services:
+  # API Gateway
+  gateway:
+    build: ./gateway/laravel
+    ports:
+      - "8000:80"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+    volumes:
+      - ./gateway/laravel:/var/www/html
+    depends_on:
+      - redis
+      - rabbitmq
+    networks:
+      - pos-network
+
+  # Auth Service
+  auth-service:
+    build: ./auth-service/laravel
+    ports:
+      - "8001:80"
+    environment:
+      - APP_ENV=local
+      - DB_HOST=auth-db
+      - DB_DATABASE=auth_db
+    volumes:
+      - ./auth-service/laravel:/var/www/html
+    depends_on:
+      - auth-db
+      - redis
+      - rabbitmq
+    networks:
+      - pos-network
+
+  # Product Service
+  product-service:
+    build: ./product-service/laravel
+    ports:
+      - "8002:80"
+    environment:
+      - APP_ENV=local
+      - DB_HOST=product-db
+      - DB_DATABASE=product_db
+    volumes:
+      - ./product-service/laravel:/var/www/html
+    depends_on:
+      - product-db
+      - redis
+      - rabbitmq
+    networks:
+      - pos-network
+
+  # Order Service
+  order-service:
+    build: ./order-service/laravel
+    ports:
+      - "8003:80"
+    environment:
+      - APP_ENV=local
+      - DB_HOST=order-db
+      - DB_DATABASE=order_db
+    volumes:
+      - ./order-service/laravel:/var/www/html
+    depends_on:
+      - order-db
+      - redis
+      - rabbitmq
+    networks:
+      - pos-network
+
+  # Payment Service
+  payment-service:
+    build: ./payment-service/laravel
+    ports:
+      - "8004:80"
+    environment:
+      - APP_ENV=local
+      - DB_HOST=payment-db
+      - DB_DATABASE=payment_db
+    volumes:
+      - ./payment-service/laravel:/var/www/html
+    depends_on:
+      - payment-db
+      - redis
+      - rabbitmq
+    networks:
+      - pos-network
+
+  # Reporting Service
+  reporting-service:
+    build: ./reporting-service/laravel
+    ports:
+      - "8005:80"
+    environment:
+      - APP_ENV=local
+      - MONGODB_HOST=mongodb
+      - MONGODB_DATABASE=reporting_db
+    volumes:
+      - ./reporting-service/laravel:/var/www/html
+    depends_on:
+      - mongodb
+      - redis
+      - rabbitmq
+    networks:
+      - pos-network
+
+  # Databases
+  auth-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: auth_db
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - auth-db-data:/var/lib/mysql
+    networks:
+      - pos-network
+
+  product-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: product_db
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - product-db-data:/var/lib/mysql
+    networks:
+      - pos-network
+
+  order-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: order_db
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - order-db-data:/var/lib/mysql
+    networks:
+      - pos-network
+
+  payment-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: payment_db
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - payment-db-data:/var/lib/mysql
+    networks:
+      - pos-network
+
+  mongodb:
+    image: mongo:6
+    environment:
+      MONGO_INITDB_DATABASE: reporting_db
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - pos-network
+
+  # Redis
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - pos-network
+
+  # RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: pos
+      RABBITMQ_DEFAULT_PASS: pos123
+    networks:
+      - pos-network
+
+volumes:
+  auth-db-data:
+  product-db-data:
+  order-db-data:
+  payment-db-data:
+  mongodb-data:
+
+networks:
+  pos-network:
+    driver: bridge
